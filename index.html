@@ -824,6 +824,30 @@
     }
   }
 
+  .toast-box {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--emerald-deep);
+    color: var(--white);
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 200;
+  }
+
+  .toast-box.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --paper: #1B2318; --paper-deep: #232B1E; --ink: #EDE7D6;
@@ -831,6 +855,7 @@
     }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.3.3/dist/email.min.js"></script>
 </head>
 <body>
   <div class="sky" id="sky"></div>
@@ -857,6 +882,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+const EMAILJS_PUBLIC_KEY = 'rDQbM3T92K7xfBqyF';
+const EMAILJS_SERVICE_ID = 'service_2wnprel';
+const EMAILJS_TEMPLATE_ID = 'template_m722h3a';
+try { emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }); } catch (e) { /* EmailJS yüklenemedi, davet maili gönderilemeyecek ama uygulama çalışmaya devam eder */ }
 
 const firebaseConfig = {
   apiKey: "AIzaSyB2hDbVwUhRZALIxvzKXQoGJ3dubhN9XRg",
@@ -1031,6 +1061,20 @@ const menuBtn = document.getElementById('menuBtn');
 
 function closeModal() { overlay.classList.remove('open'); }
 
+function showToast(message) {
+  let toast = document.getElementById('toastBox');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toastBox';
+    toast.className = 'toast-box';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(() => { toast.classList.remove('show'); }, 3800);
+}
+
 /* Gökyüzü artık gerçek bir illüstrasyon (hero-bg.jpg) — ek bir şey çizmeye gerek yok. */
 
 /* ---------- Render ---------- */
@@ -1197,13 +1241,21 @@ function renderLoggedOut() {
     '</div>';
   const btn = document.getElementById('loggedOutLoginBtn');
   if (btn) btn.addEventListener('click', () => openLoginModal());
+
+  const rawHash = (window.location.hash || '').replace('#', '').trim();
+  const hashParts = rawHash.split(':');
+  if (hashParts.length > 1 && hashParts[1] && !overlay.classList.contains('open')) {
+    const prefillEmail = decodeURIComponent(hashParts[1]);
+    openSignupModal(prefillEmail, 'Seni bu takvime davet ettiler — hesabını oluşturmak için sadece bir şifre belirlemen yeterli.');
+  }
 }
 
 /* ---------- Veri yükleme ---------- */
 async function determineAndLoadCalendar() {
   if (!currentUser) { state = null; render(); return; }
 
-  const hashUid = (window.location.hash || '').replace('#', '').trim();
+  const rawHash = (window.location.hash || '').replace('#', '').trim();
+  const hashUid = rawHash.split(':')[0];
   const targetUid = hashUid || currentUser.uid;
   viewingOwnerUid = targetUid;
 
@@ -1462,6 +1514,7 @@ function openInviteModal() {
 
   document.getElementById('inviteAddBtn').addEventListener('click', async () => {
     const inp = document.getElementById('inviteEmailInput');
+    const addBtn = document.getElementById('inviteAddBtn');
     const val = inp.value.trim().toLowerCase();
     if (!val || invited.includes(val)) { inp.value = ''; return; }
     invited.push(val);
@@ -1469,6 +1522,22 @@ function openInviteModal() {
     await saveState();
     inp.value = '';
     renderInviteList();
+
+    const personalLink = window.location.origin + window.location.pathname + '#' + currentUser.uid + ':' + encodeURIComponent(val);
+    addBtn.textContent = 'Mail gönderiliyor…';
+    addBtn.disabled = true;
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: val,
+        inviter_name: currentUser.email,
+        invite_link: personalLink
+      });
+      showToast('Davet maili ' + val + ' adresine gönderildi.');
+    } catch (e) {
+      showToast('Davet eklendi ama mail gönderilemedi — linki elle paylaşabilirsin.');
+    }
+    addBtn.textContent = 'Davet Et';
+    addBtn.disabled = false;
   });
 
   document.getElementById('copyLinkBtn').addEventListener('click', () => {
@@ -1582,13 +1651,13 @@ async function doLogin() {
   }
 }
 
-function openSignupModal() {
+function openSignupModal(prefillEmail, note) {
   modalContent.innerHTML =
     '<div style="background:#FBF1DC; border:1px solid var(--gold-soft); color:var(--gold); padding:7px 12px; border-radius:8px; font-weight:600; font-size:12.5px; margin-bottom:14px; text-align:center;">✍️ Hesap Oluşturma Ekranı</div>' +
     '<h2>Kayıt Ol</h2>' +
-    '<p class="sub">Yeni bir hesap oluştur.</p>' +
+    '<p class="sub">' + escapeHtml(note || 'Yeni bir hesap oluştur.') + '</p>' +
     '<form id="signupForm">' +
-      '<input type="email" id="authEmailInput" name="email" placeholder="E-posta" autocomplete="username" required>' +
+      '<input type="email" id="authEmailInput" name="email" placeholder="E-posta" value="' + escapeHtml(prefillEmail || '') + '" autocomplete="username" required>' +
       passwordFieldHtml('authPassInput', 'Şifre (en az 6 karakter)', 'new-password') +
       '<div class="modal-actions">' +
         '<button type="button" class="btn btn-ghost" id="authCancelBtn">Vazgeç</button>' +
@@ -1601,7 +1670,7 @@ function openSignupModal() {
   document.getElementById('authLoginLink').addEventListener('click', () => openLoginModal());
   bindPasswordToggle('authPassInput');
   overlay.classList.add('open');
-  setTimeout(() => document.getElementById('authEmailInput').focus(), 50);
+  setTimeout(() => document.getElementById(prefillEmail ? 'authPassInput' : 'authEmailInput').focus(), 50);
 }
 
 async function doSignup() {
