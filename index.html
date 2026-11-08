@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ramazan Sofrası</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#1E4D3B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F5EFE1;
+    --paper-deep: #ECE3CC;
+    --ink: #26301F;
+    --ink-soft: #5B6350;
+    --emerald: #1C7A5E;
+    --emerald-deep: #0F4A38;
+    --gold: #B08A2E;
+    --gold-soft: #D9C68F;
+    --line: #D8CBA8;
+    --white: #FFFDF8;
+    color-scheme: light dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; margin: 0; }
+
+  body {
+    font-family: 'Work Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100%;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Ramazan süslemesi (arka plan) ---------- */
+  .sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(180deg, rgba(10,34,25,0.1) 0%, rgba(10,34,25,0.1) 85%, var(--paper) 100%),
+      url('hero-bg.jpg');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    overflow: hidden;
+  }
+
+  .app-shell {
+    position: relative;
+    z-index: 1;
+    padding: 18px 16px 50px;
+    padding-top: calc(18px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(50px + env(safe-area-inset-bottom, 0px));
+    min-height: 100vh;
+  }
+
+  header {
+    text-align: center;
+    margin-top: 90px;
+    margin-bottom: 50px;
+  }
+
+  header .header-card {
+    display: inline-block;
+    max-width: 440px;
+    margin: 0 16px;
+    padding: 24px 26px;
+    background: rgba(8, 24, 17, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+
+  .kicker {
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+
+  h1 {
+    font-family: 'Amiri', serif;
+    font-size: 32px;
+    color: var(--white);
+    margin: 0 0 6px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .desc {
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 320px;
+    margin: 0 auto 10px;
+  }
+
+  .range { color: var(--gold-soft); font-size: 14px; margin: 0; }
+
+  .header-img {
+    width: 74px;
+    height: 74px;
+    object-fit: contain;
+    margin: 0 auto 8px;
+    display: block;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+  }
+
+  .key-dates { margin: 0 auto; }
+
+  .key-date-row {
+    font-size: 13.5px;
+    color: var(--white);
+    margin: 0 0 5px;
+    text-align: center;
+  }
+
+  .key-date-row strong { color: var(--gold-soft); font-weight: 700; }
+
+  .key-date-row:last-child { margin-bottom: 0; }
+
+  .menu-btn {
+    position: fixed;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    right: 14px;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .menu-btn:hover {
+    background: rgba(255,255,255,0.24);
+    transform: translateY(-1px);
+  }
+
+  .grid {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 860px) {
+    .grid { max-width: 1040px; }
+    .cal-day { height: 104px; }
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: 8px;
+    max-width: 760px;
+    margin: 0 auto 14px;
+  }
+
+  @media (min-width: 860px) {
+    .view-toggle { max-width: 1040px; }
+  }
+
+  .view-toggle-btn {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--white);
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .view-toggle-btn.active {
+    background: var(--emerald);
+    border-color: var(--emerald);
+    color: var(--white);
+  }
+
+  .list-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    display: grid;
+    gap: 10px;
+  }
+
+  .agenda-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--gold-soft);
+    border-radius: 16px;
+    background: var(--white);
+    box-shadow: 0 6px 20px rgba(20,51,39,0.12);
+    padding: 8px;
+  }
+
+  .cal-table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: separate;
+    border-spacing: 4px;
+  }
+
+  .cal-table thead th {
+    text-align: center;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    background: linear-gradient(120deg, var(--emerald-deep), var(--emerald) 60%, var(--emerald-deep));
+    padding: 8px 4px;
+    border-radius: 8px;
+  }
+
+  .cal-day {
+    position: relative;
+    width: 14.2%;
+    height: 88px;
+    vertical-align: top;
+    padding: 5px 6px;
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    overflow: hidden;
+  }
+
+  .cal-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 85%;
+    height: auto;
+    transform: translate(-50%, -50%);
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .cal-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+  }
+
+  .cal-day.cal-clickable { cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease; }
+  .cal-day.cal-clickable:hover { background: var(--gold-soft); border-color: var(--gold); }
+
+  /* Hafta sonu (Cumartesi + Pazar) — ikisi de aynı renk, belirgin vurgulu */
+  .cal-table td.cal-day:nth-child(6),
+  .cal-table td.cal-day:nth-child(7) {
+    background: linear-gradient(160deg, rgba(217,198,143,0.45), rgba(176,138,46,0.22));
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 0 1px rgba(176,138,46,0.25) inset;
+  }
+  .cal-table td.cal-day.cal-clickable:nth-child(6):hover,
+  .cal-table td.cal-day.cal-clickable:nth-child(7):hover {
+    background: var(--gold-soft);
+  }
+  .cal-table td.cal-day:nth-child(6) .cal-badge,
+  .cal-table td.cal-day:nth-child(7) .cal-badge {
+    background: linear-gradient(160deg, var(--emerald), var(--emerald-deep));
+    color: var(--white);
+  }
+
+  .cal-table th:nth-child(6),
+  .cal-table th:nth-child(7) {
+    background: linear-gradient(120deg, var(--gold), #C9A24A);
+  }
+
+  /* Dini gece/gün (Kadir Gecesi, Arefe vb.) — zengin altın tema, en belirgin öncelik */
+  .cal-table td.cal-day.cal-special {
+    background: linear-gradient(160deg, #F7E3A8, #E3C878 55%, #C9A24A);
+    border: 2px solid #8A6A1E;
+    box-shadow: 0 2px 8px rgba(176,138,46,0.4);
+  }
+
+  .cal-table td.cal-day.cal-special .cal-badge {
+    background: var(--emerald-deep);
+    color: #F7E3A8;
+  }
+
+  .cal-special-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: #5C3A0E;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .special-icon-sm {
+    width: 12px;
+    height: 12px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .special-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  /* Dolu günler — canlı pastel mercan/turuncu, hafta sonu renginin önüne geçer */
+  .cal-table td.cal-day.cal-filled {
+    background: linear-gradient(160deg, #BFEAE3, #7FD4C6);
+    border: 2px solid #2A9D8F;
+  }
+
+  .cal-table td.cal-day.cal-filled .cal-badge {
+    background: linear-gradient(160deg, #2A9D8F, #1C6E64);
+    color: var(--white);
+  }
+
+  .cal-table td.cal-day.cal-filled .cal-tag { color: #0F4C47; }
+
+  .cal-table td.cal-day.cal-filled.cal-clickable:hover { background: linear-gradient(160deg, #A8E6DA, #6FC9B8); }
+
+  /* Hem dolu hem dini gece ise — ikisinin karışımı, altın kenarlık baskın */
+  .cal-table td.cal-day.cal-filled.cal-special {
+    background: linear-gradient(160deg, #F7E3A8, #7FD4C6 65%, #E3C878);
+    border: 2px solid #8A6A1E;
+  }
+
+  .cal-table td.cal-day.cal-filled.cal-special .cal-badge {
+    background: var(--emerald-deep);
+    color: #F7E3A8;
+  }
+
+  /* Ramazan Bayramı günleri — kendine özgü, festival hissi veren renk */
+  .cal-table td.cal-day.cal-bayram {
+    background: linear-gradient(160deg, #FDE8B8, #F0C96B);
+    border: 2px dashed var(--gold);
+  }
+
+  .cal-table td.cal-day.cal-bayram .cal-badge {
+    background: var(--gold);
+    color: var(--emerald-deep);
+  }
+
+  .cal-empty {
+    background: transparent;
+    border: none;
+  }
+
+  .cal-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+
+  .cal-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, var(--gold-soft), var(--gold));
+    color: var(--emerald-deep);
+    font-weight: 700;
+    font-size: 10.5px;
+    flex-shrink: 0;
+  }
+
+  .cal-date { font-size: 10px; color: var(--ink-soft); }
+
+  .cal-tag {
+    font-size: 10px;
+    line-height: 1.3;
+    color: var(--emerald-deep);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .cal-tag.cal-sahur { color: #6B4A1E; margin-top: 2px; }
+
+  @media (max-width: 680px) {
+    .cal-day { height: 76px; padding: 4px 5px; }
+    .cal-tag { font-size: 9px; -webkit-line-clamp: 3; }
+  }
+
+  .day-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--white), var(--paper-deep) 220%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 14px rgba(20,51,39,0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .card-watermark {
+    position: absolute;
+    top: 50%;
+    right: -10px;
+    width: 120px;
+    height: auto;
+    transform: translateY(-50%);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .day-card .day-num,
+  .day-card .day-info,
+  .day-card .day-edit-btn {
+    position: relative;
+    z-index: 1;
+  }
+
+  .day-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(20,51,39,0.14);
+    border-color: var(--gold-soft);
+  }
+
+  .day-card.empty { opacity: 0.75; }
+
+  .day-card.filled {
+    border: 2px solid #2A9D8F;
+    background: linear-gradient(135deg, #DCF4EF, #BFEAE3 220%);
+  }
+
+  .day-card.filled .day-num {
+    background: linear-gradient(160deg, #2A9D8F, #1C6E64);
+    color: var(--white);
+  }
+
+  .day-card.special {
+    border: 2px solid #8A6A1E;
+    background: linear-gradient(135deg, #FBEFC4, #F7E3A8 220%);
+  }
+
+  .day-card.special .day-num {
+    background: var(--emerald-deep);
+    color: #F7E3A8;
+  }
+
+  .day-card.filled.special {
+    background: linear-gradient(135deg, #FBEFC4, #BFEAE3 220%);
+    border: 2px solid #8A6A1E;
+  }
+
+  .day-card.bayram {
+    border: 2px dashed var(--gold);
+    background: linear-gradient(135deg, #FDE8B8, #F0C96B 220%);
+  }
+
+  .day-card.bayram .day-num {
+    background: var(--gold);
+    color: var(--emerald-deep);
+  }
+
+  .special-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    background: var(--paper-deep);
+    border-radius: 6px;
+    padding: 1px 6px;
+    margin-left: 4px;
+  }
+
+  .day-num {
+    flex-shrink: 0;
+    width: 50px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--white);
+    background: linear-gradient(160deg, var(--gold), var(--emerald));
+    clip-path: polygon(50% 0%, 100% 20%, 100% 100%, 0% 100%, 0% 20%);
+  }
+
+  .day-info { flex: 1; min-width: 0; }
+
+  .day-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--emerald-deep);
+    margin: 0 0 2px;
+  }
+
+  .day-date { font-size: 12px; color: var(--ink-soft); margin: 0 0 4px; }
+
+  .meal-row { margin: 2px 0; }
+
+  .meal-tag {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--gold);
+    background: var(--paper-deep);
+    border-radius: 5px;
+    padding: 1px 6px;
+    margin-right: 5px;
+  }
+
+  .day-families {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--emerald-deep);
+    margin: 0;
+    word-wrap: break-word;
+  }
+
+  .day-families.placeholder { font-weight: 400; color: var(--ink-soft); font-style: italic; }
+
+  .day-edit-btn {
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--gold);
+  }
+
+  .empty-state {
+    max-width: 440px;
+    margin: 0 auto;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .empty-state p { color: var(--ink-soft); font-size: 14.5px; line-height: 1.6; }
+
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .feature-list li {
+    font-size: 14px;
+    color: var(--ink);
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+    line-height: 1.5;
+  }
+
+  .feature-list li:last-child { border-bottom: none; }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 14, 0.55);
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+
+  .overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 22px 20px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+  }
+
+  .modal h2 { font-family: 'Amiri', serif; color: var(--emerald-deep); margin: 0 0 10px; }
+  .modal .sub { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 14px; }
+
+  .modal input, .modal form input, .modal select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    margin-bottom: 10px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .modal input:focus { outline: none; border-color: var(--emerald); }
+
+  .pw-field { position: relative; margin-bottom: 10px; }
+  .pw-field input { margin-bottom: 0 !important; padding-right: 42px !important; }
+  .pw-toggle-btn {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px; background: none; border: none; cursor: pointer;
+    font-size: 16px; color: var(--ink-soft); display: flex; align-items: center; justify-content: center;
+  }
+
+  .official-dates-box {
+    background: var(--paper-deep);
+    border: 1px solid var(--gold-soft);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+  }
+
+  .official-dates-text {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--emerald-deep);
+  }
+
+  .official-dates-sub {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+
+  .pin-hint {
+    font-size: 12.5px;
+    color: var(--gold);
+    cursor: pointer;
+    text-decoration: underline;
+    margin: 0;
+  }
+
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+  }
+
+  .list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: var(--paper-deep);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 14.5px;
+  }
+
+  .list button { background: none; border: none; color: #A6432D; font-size: 16px; cursor: pointer; }
+
+  .modal-actions { display: flex; gap: 10px; }
+
+  .btn {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .btn-primary { background: var(--emerald); color: var(--white); }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+  .btn-nav { background: var(--paper-deep); color: var(--emerald); border: 1px solid var(--line); }
+  .btn-danger { background: #A6432D; color: var(--white); }
+
+  #printArea { display: none; }
+
+  @media print {
+    @page { margin: 10mm; size: A4; }
+
+    html, body { height: auto !important; margin: 0 !important; }
+
+    .sky, .menu-btn, .app-shell, .overlay { display: none !important; }
+    #printArea {
+      display: block !important;
+      box-sizing: border-box;
+      height: 277mm;
+      overflow: hidden;
+      color: #16261D;
+      font-family: 'Work Sans', sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      border: 1px solid #B08A2E;
+      border-radius: 6px;
+      padding: 10px 12px 8px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(176,138,46,0.06), transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(30,77,59,0.05), transparent 40%),
+        #FFFDF8;
+    }
+
+    #printArea .print-header {
+      text-align: center;
+      margin-bottom: 10px;
+      padding-bottom: 7px;
+      border-bottom: 2px double #B08A2E;
+    }
+
+    #printArea .print-emoji-row {
+      font-size: 12px;
+      letter-spacing: 6px;
+      margin-bottom: 2px;
+      opacity: 0.8;
+    }
+
+    #printArea .print-kicker {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #B08A2E;
+      font-weight: 700;
+      margin: 0 0 2px;
+    }
+
+    #printArea h1 {
+      font-family: 'Amiri', serif;
+      font-size: 24px;
+      color: #143327;
+      margin: 0 0 4px;
+    }
+
+    #printArea .print-range {
+      font-size: 11px;
+      color: #5B6350;
+      margin: 0;
+      font-style: italic;
+    }
+
+    #printArea table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 12px;
+      border: 1px solid #B08A2E;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(176,138,46,0.15);
+    }
+
+    #printArea thead th {
+      background: linear-gradient(120deg, #143327, #1E4D3B 60%, #143327);
+      color: #FFFDF8;
+      padding: 6px 7px;
+      text-align: left;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      border-bottom: 1px solid #B08A2E;
+    }
+
+    #printArea td {
+      border-top: 1px solid #E3D4AC;
+      padding: 5px 7px;
+      text-align: left;
+      line-height: 1.25;
+    }
+
+    #printArea tr { page-break-inside: avoid; }
+    #printArea { page-break-after: avoid; page-break-before: avoid; }
+
+    #printArea tbody tr:nth-child(even) { background: #F1E6CC; }
+    #printArea tbody tr.pspecial { background: linear-gradient(90deg, #F7E3A8, #E3C878) !important; font-weight: 700; }
+    #printArea tbody tr.pbayram { background: linear-gradient(90deg, #BFEAE3, #7FD4C6) !important; font-weight: 700; color: #0F4C47; }
+    #printArea tbody tr:nth-child(odd) { background: #FFFDF8; }
+    #printArea tbody tr:hover { background: #F1E6CC; }
+
+    #printArea td.pnum {
+      text-align: center;
+      font-weight: 700;
+      width: 24px;
+      color: #143327;
+    }
+
+    #printArea td.pdate { white-space: nowrap; color: #5B6350; }
+
+    #printArea .print-footer {
+      margin-top: 7px;
+      text-align: center;
+      font-size: 10px;
+      color: #B08A2E;
+      letter-spacing: 0.06em;
+      font-style: italic;
+      border-top: 1px solid #E3D4AC;
+      padding-top: 5px;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1B2318; --paper-deep: #232B1E; --ink: #EDE7D6;
+      --ink-soft: #B9B29E; --white: #232B1E; --line: #3A4231;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="sky" id="sky"></div>
+
+  <button class="menu-btn" id="menuBtn">☰ Menü</button>
+
+  <div class="app-shell">
+    <header>
+      <div class="header-card">
+        <p class="kicker" id="kickerLabel">Ramazan</p>
+        <h1 id="pageTitle">Ramazan Sofrası</h1>
+        <div id="headerDynamic"></div>
+      </div>
+    </header>
+
+    <div class="grid" id="dayGrid"></div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB2hDbVwUhRZALIxvzKXQoGJ3dubhN9XRg",
+  authDomain: "ramazan-sofrasi-82446.firebaseapp.com",
+  projectId: "ramazan-sofrasi-82446",
+  storageBucket: "ramazan-sofrasi-82446.firebasestorage.app",
+  messagingSenderId: "995334533157",
+  appId: "1:995334533157:web:99956392c57a53b77f0fcc"
+};
+
+let db = null, auth = null;
+let firebaseReady = false;
+try {
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('BURAYA') === -1) {
+    const app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    auth = getAuth(app);
+    firebaseReady = true;
+  }
+} catch (e) { /* firebaseReady false kalır */ }
+
+function calendarDocRef(ownerUid) {
+  return doc(db, 'iftar_calendars', ownerUid);
+}
+
+let currentUser = null;
+let viewingOwnerUid = null; // şu an hangi takvime bakıyoruz
+let state = null; // { ownerUid, ownerEmail, invitedEmails: [...], startDate, numberOfDays, days: [...] }
+let canEdit = false;
+let stateUnsub = null;
+
+const THEMES = {
+  emerald: { accent: '#1C7A5E', accentDeep: '#0F4A38', name: 'Zümrüt Yeşili' },
+  burgundy: { accent: '#6B2737', accentDeep: '#4A1A26', name: 'Bordo' },
+  navy: { accent: '#1B3A5C', accentDeep: '#122840', name: 'Lacivert' },
+  purple: { accent: '#4A2E6B', accentDeep: '#331F4A', name: 'Mor' }
+};
+
+function applyTheme(themeKey) {
+  const t = THEMES[themeKey] || THEMES.emerald;
+  document.documentElement.style.setProperty('--emerald', t.accent);
+  document.documentElement.style.setProperty('--emerald-deep', t.accentDeep);
+}
+
+function freshDay() {
+  return { iftar: null, sahur: null };
+}
+
+// Diyanet'in resmi dini günler takvimine göre — bir sonraki Ramazan.
+// Yeni bir yıl geldiğinde bu iki değeri güncellemek yeterli.
+const DEFAULT_RAMADAN_START = '2027-02-08';
+const DEFAULT_RAMADAN_DAYS = 29;
+const DEFAULT_BAYRAM_DAYS = 3;
+
+// Ramazan içine denk gelen dini gece(ler) — Diyanet takvimine göre, yıl değişince güncellenir.
+const SPECIAL_NIGHTS = {
+  '2027-03-05': 'Kadir Gecesi',
+  '2027-03-08': 'Arefe Günü'
+};
+
+function totalGridDays(s) {
+  return (s.numberOfDays || 0) + (s.includeBayram ? (s.bayramDays || 0) : 0);
+}
+
+function freshState(ownerUid, ownerEmail) {
+  const total = DEFAULT_RAMADAN_DAYS + DEFAULT_BAYRAM_DAYS;
+  return {
+    ownerUid, ownerEmail, invitedEmails: [],
+    calendarName: '', guestLabel: 'Aile', trackSahur: false, colorTheme: 'emerald',
+    startDate: DEFAULT_RAMADAN_START, numberOfDays: DEFAULT_RAMADAN_DAYS,
+    includeBayram: true, bayramDays: DEFAULT_BAYRAM_DAYS,
+    slotsPerDay: 3,
+    days: new Array(total).fill(null).map(freshDay)
+  };
+}
+
+function sanitizeDay(d) {
+  if (Array.isArray(d)) return { iftar: d.length ? d : null, sahur: null }; // eski format
+  if (d && typeof d === 'object') {
+    return {
+      iftar: Array.isArray(d.iftar) && d.iftar.length ? d.iftar : null,
+      sahur: Array.isArray(d.sahur) && d.sahur.length ? d.sahur : null
+    };
+  }
+  return freshDay();
+}
+
+function sanitizeState(raw, ownerUid) {
+  if (!raw || typeof raw !== 'object') return freshState(ownerUid, '');
+  const numberOfDays = raw.numberOfDays || 30;
+  const includeBayram = raw.includeBayram !== undefined ? !!raw.includeBayram : true;
+  const bayramDays = raw.bayramDays || DEFAULT_BAYRAM_DAYS;
+  const total = numberOfDays + (includeBayram ? bayramDays : 0);
+  let days = Array.isArray(raw.days) ? raw.days.slice(0, total) : [];
+  while (days.length < total) days.push(null);
+  days = days.map(sanitizeDay);
+  return {
+    ownerUid: raw.ownerUid || ownerUid,
+    ownerEmail: raw.ownerEmail || '',
+    invitedEmails: Array.isArray(raw.invitedEmails) ? raw.invitedEmails : [],
+    calendarName: raw.calendarName || '',
+    guestLabel: raw.guestLabel || 'Aile',
+    trackSahur: !!raw.trackSahur,
+    colorTheme: raw.colorTheme || 'emerald',
+    startDate: raw.startDate || null,
+    numberOfDays,
+    includeBayram,
+    bayramDays,
+    slotsPerDay: raw.slotsPerDay || 3,
+    days
+  };
+}
+
+function getViewMode() {
+  try { return localStorage.getItem('ramazanViewMode') || 'list'; } catch (e) { return 'list'; }
+}
+
+function setViewMode(mode) {
+  try { localStorage.setItem('ramazanViewMode', mode); } catch (e) { /* sorun değil */ }
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return d;
+}
+
+function toISODate(dateObj) {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const d = String(dateObj.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + d;
+}
+
+function getDayMeta(idx) {
+  const isBayram = idx >= state.numberOfDays;
+  const label = isBayram
+    ? 'Ramazan Bayramı ' + (idx - state.numberOfDays + 1) + '. Günü'
+    : 'Ramazan\'ın ' + (idx + 1) + '. Günü';
+  return { isBayram, label };
+}
+
+const trMonths = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+const trDays = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+
+function formatDate(dateObj) {
+  return trDays[dateObj.getDay()] + ', ' + dateObj.getDate() + ' ' + trMonths[dateObj.getMonth()];
+}
+
+function authErrorText(e) {
+  const code = (e && e.code) || '';
+  if (code.indexOf('email-already-in-use') !== -1) return 'Bu e-posta zaten kayıtlı.';
+  if (code.indexOf('invalid-email') !== -1) return 'Geçersiz e-posta adresi.';
+  if (code.indexOf('weak-password') !== -1) return 'Şifre çok zayıf — en az 6 karakter olmalı.';
+  if (code.indexOf('wrong-password') !== -1 || code.indexOf('invalid-credential') !== -1) return 'E-posta veya şifre yanlış.';
+  if (code.indexOf('user-not-found') !== -1) return 'Bu e-posta ile kayıtlı hesap yok.';
+  if (code.indexOf('too-many-requests') !== -1) return 'Çok fazla deneme yapıldı, biraz sonra tekrar dene.';
+  return 'Bir hata oluştu, tekrar dener misin?';
+}
+
+/* ---------- Sayfa iskeleti ---------- */
+const skyEl = document.getElementById('sky');
+const dayGrid = document.getElementById('dayGrid');
+const headerDynamic = document.getElementById('headerDynamic');
+const overlay = document.getElementById('overlay');
+const modalContent = document.getElementById('modalContent');
+const menuBtn = document.getElementById('menuBtn');
+
+function closeModal() { overlay.classList.remove('open'); }
+
+/* Gökyüzü artık gerçek bir illüstrasyon (hero-bg.jpg) — ek bir şey çizmeye gerek yok. */
+
+/* ---------- Render ---------- */
+function render() {
+  if (!currentUser) { renderLoggedOut(); return; }
+  if (!state) { dayGrid.innerHTML = ''; headerDynamic.innerHTML = '<p class="range">Yükleniyor…</p>'; return; }
+
+  applyTheme(state.colorTheme);
+  if (state.startDate) {
+    document.getElementById('kickerLabel').textContent = 'Ramazan ' + new Date(state.startDate + 'T00:00:00').getFullYear();
+  }
+  document.getElementById('pageTitle').textContent = state.calendarName || 'Ramazan Sofrası';
+
+  if (!state.startDate) {
+    headerDynamic.innerHTML = '<p class="range">' + (canEdit ? 'Henüz tarih ayarlanmadı — Menü → Tarihleri Ayarla.' : 'Takvim henüz hazırlanıyor.') + '</p>';
+    dayGrid.innerHTML = '';
+    return;
+  }
+
+  const start = addDays(state.startDate, 0);
+  const ramazanEnd = addDays(state.startDate, state.numberOfDays - 1);
+  const end = addDays(state.startDate, totalGridDays(state) - 1);
+
+  const kadirDate = Object.keys(SPECIAL_NIGHTS).find((iso) => SPECIAL_NIGHTS[iso] === 'Kadir Gecesi');
+  const kadirObj = kadirDate ? new Date(kadirDate + 'T00:00:00') : null;
+
+  headerDynamic.innerHTML =
+    '<img src="lantern-bg.png" class="header-img" alt="">' +
+    '<div class="key-dates">' +
+      '<p class="key-date-row">🌙 <strong>Ramazan:</strong> ' + formatDate(start) + ' — ' + formatDate(ramazanEnd) + '</p>' +
+      (kadirObj ? '<p class="key-date-row">⭐ <strong>Kadir Gecesi:</strong> ' + formatDate(kadirObj) + '</p>' : '') +
+      (state.includeBayram ? '<p class="key-date-row">🎉 <strong>Bayram:</strong> ' + formatDate(addDays(state.startDate, state.numberOfDays)) + ' — ' + formatDate(end) + '</p>' : '') +
+    '</div>';
+
+  const viewToggleHtml =
+    '<div class="view-toggle">' +
+      '<button class="view-toggle-btn' + (getViewMode() === 'list' ? ' active' : '') + '" id="viewListBtn">📋 Liste</button>' +
+      '<button class="view-toggle-btn' + (getViewMode() === 'calendar' ? ' active' : '') + '" id="viewCalBtn">📅 Takvim</button>' +
+    '</div>';
+
+  const bodyHtml = getViewMode() === 'calendar' ? buildCalendarViewHtml(start) : buildListViewHtml();
+
+  dayGrid.innerHTML = viewToggleHtml + bodyHtml;
+
+  document.getElementById('viewListBtn').addEventListener('click', () => { setViewMode('list'); render(); });
+  document.getElementById('viewCalBtn').addEventListener('click', () => { setViewMode('calendar'); render(); });
+
+  if (canEdit) {
+    dayGrid.querySelectorAll('.cal-clickable, .day-edit-btn').forEach((el) => {
+      el.addEventListener('click', () => openDayEditModal(parseInt(el.getAttribute('data-idx'), 10)));
+    });
+  }
+}
+
+function buildListViewHtml() {
+  const guestLabel = state.guestLabel || 'Aile';
+
+  function mealRow(label, names) {
+    const has = names && names.length > 0;
+    const text = has ? names.map(escapeHtml).join(' + ') : guestLabel + ' yok';
+    return '<p class="meal-row"><span class="meal-tag">' + label + '</span> ' +
+      '<span class="day-families' + (has ? '' : ' placeholder') + '">' + text + '</span></p>';
+  }
+
+  const cards = state.days.map((day, idx) => {
+    const dateObj = addDays(state.startDate, idx);
+    const hasAny = (day.iftar && day.iftar.length) || (day.sahur && day.sahur.length);
+    const specialLabel = SPECIAL_NIGHTS[toISODate(dateObj)];
+    const meta = getDayMeta(idx);
+    return '<div class="day-card' + (hasAny ? ' filled' : ' empty') + (specialLabel ? ' special' : '') + (meta.isBayram ? ' bayram' : '') + '">' +
+      (specialLabel ? '<img src="lantern-bg.png" class="card-watermark" alt="">' : '') +
+      (meta.isBayram ? '<img src="bayram-bg.png" class="card-watermark" alt="">' : '') +
+      '<div class="day-num">' + (meta.isBayram ? '🎉' : (idx + 1)) + '</div>' +
+      '<div class="day-info">' +
+        '<p class="day-label">' + meta.label +
+          (meta.isBayram ? ' <span class="special-badge">🎉 Bayram</span>' : '') +
+          (specialLabel ? ' <span class="special-badge"><img src="lantern-special-icon.png" class="special-icon" alt="">' + escapeHtml(specialLabel) + '</span>' : '') +
+        '</p>' +
+        '<p class="day-date">' + formatDate(dateObj) + '</p>' +
+        mealRow('İftar', day.iftar) +
+        (state.trackSahur ? mealRow('Sahur', day.sahur) : '') +
+      '</div>' +
+      (canEdit ? '<button class="day-edit-btn" data-idx="' + idx + '">✏️</button>' : '') +
+    '</div>';
+  }).join('');
+
+  return '<div class="list-wrap">' + cards + '</div>';
+}
+
+function buildCalendarViewHtml(start) {
+  const weekdayNames = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+  const jsDay = start.getDay(); // 0=Pazar..6=Cumartesi
+  const leadIn = (jsDay + 6) % 7; // Pazartesi=0 olacak şekilde kaydır
+
+  function cellInner(idx) {
+    if (idx === null) return '<td class="cal-empty"></td>';
+    const day = state.days[idx];
+    const dateObj = addDays(state.startDate, idx);
+    const hasIftar = day.iftar && day.iftar.length;
+    const hasSahur = state.trackSahur && day.sahur && day.sahur.length;
+    const isFilled = hasIftar || hasSahur;
+    const isoDate = toISODate(dateObj);
+    const specialLabel = SPECIAL_NIGHTS[isoDate];
+    const meta = getDayMeta(idx);
+    const badgeText = meta.isBayram ? '🎉' : (idx + 1);
+    return '<td class="cal-day' + (isFilled ? ' cal-filled' : '') + (specialLabel ? ' cal-special' : '') + (meta.isBayram ? ' cal-bayram' : '') + (canEdit ? ' cal-clickable' : '') + '" data-idx="' + idx + '" title="' + escapeHtml(meta.label + (specialLabel ? ' — ' + specialLabel : '')) + '">' +
+      (specialLabel ? '<img src="lantern-bg.png" class="cal-watermark" alt="">' : '') +
+      (meta.isBayram ? '<img src="bayram-bg.png" class="cal-watermark" alt="">' : '') +
+      '<div class="cal-content">' +
+        '<div class="cal-top"><span class="cal-badge">' + badgeText + '</span><span class="cal-date">' + dateObj.getDate() + '/' + (dateObj.getMonth() + 1) + '</span></div>' +
+        (meta.isBayram ? '<div class="cal-special-label">🎉 Bayram ' + (idx - state.numberOfDays + 1) + '</div>' : '') +
+        (specialLabel ? '<div class="cal-special-label">' + escapeHtml(specialLabel) + '</div>' : '') +
+        (hasIftar ? '<div class="cal-tag cal-iftar">' + day.iftar.map(escapeHtml).join('<br>') + '</div>' : '') +
+        (hasSahur ? '<div class="cal-tag cal-sahur">' + day.sahur.map(escapeHtml).join('<br>') + '</div>' : '') +
+      '</div>' +
+    '</td>';
+  }
+
+  const gridDays = totalGridDays(state);
+  const totalCells = leadIn + gridDays;
+  const weeks = Math.ceil(totalCells / 7);
+  let dayCursor = 0;
+  const weekRows = [];
+  for (let w = 0; w < weeks; w++) {
+    let cells = '';
+    for (let c = 0; c < 7; c++) {
+      const cellPos = w * 7 + c;
+      if (cellPos < leadIn || dayCursor >= gridDays) {
+        cells += cellInner(null);
+      } else {
+        cells += cellInner(dayCursor);
+        dayCursor++;
+      }
+    }
+    weekRows.push('<tr>' + cells + '</tr>');
+  }
+
+  return '<div class="agenda-wrap">' +
+    '<table class="cal-table">' +
+      '<thead><tr>' + weekdayNames.map((w) => '<th>' + w + '</th>').join('') + '</tr></thead>' +
+      '<tbody>' + weekRows.join('') + '</tbody>' +
+    '</table>' +
+  '</div>';
+}
+
+function renderLoggedOut() {
+  document.getElementById('kickerLabel').textContent = 'Ramazan ' + new Date(DEFAULT_RAMADAN_START + 'T00:00:00').getFullYear();
+  headerDynamic.innerHTML =
+    '<p class="desc">İftar ve sahur davetlerini kolayca organize et — kimi hangi gün davet ediyorsun, tek bakışta gör.</p>' +
+    '<p class="range">Görmek için giriş yapman gerekiyor.</p>';
+  dayGrid.innerHTML =
+    '<div class="empty-state">' +
+      '<p>Bu takvim kişiye özel — sadece davet edilen e-postalarla görülebilir.</p>' +
+      '<div class="modal-actions"><button class="btn btn-primary" id="loggedOutLoginBtn" style="width:100%;">Giriş Yap / Kayıt Ol</button></div>' +
+    '</div>' +
+    '<div class="empty-state" style="margin-top:14px; text-align:left;">' +
+      '<p class="sub" style="font-weight:700; margin-bottom:10px; text-align:center;">Bu uygulamada neler yapabilirsin?</p>' +
+      '<ul class="feature-list">' +
+        '<li>📅 Ramazan boyunca her gün kimin iftar/sahur davet ettiğini tek bakışta gör</li>' +
+        '<li>💌 Eşini, ailenizi davet et — birlikte düzenleyin</li>' +
+        '<li>🖨️ İstediğin zaman çıktı al, buzdolabına as</li>' +
+        '<li>🎨 Takvim adını, kullanılan kelimeleri ve renk temasını özelleştir</li>' +
+      '</ul>' +
+    '</div>';
+  const btn = document.getElementById('loggedOutLoginBtn');
+  if (btn) btn.addEventListener('click', () => openLoginModal());
+}
+
+/* ---------- Veri yükleme ---------- */
+async function determineAndLoadCalendar() {
+  if (!currentUser) { state = null; render(); return; }
+
+  const hashUid = (window.location.hash || '').replace('#', '').trim();
+  const targetUid = hashUid || currentUser.uid;
+  viewingOwnerUid = targetUid;
+
+  if (stateUnsub) { stateUnsub(); stateUnsub = null; }
+
+  try {
+    const snap = await getDoc(calendarDocRef(targetUid));
+    if (snap.exists()) {
+      state = sanitizeState(snap.data(), targetUid);
+    } else if (targetUid === currentUser.uid) {
+      // kendi takvimin henüz yok — oluştur
+      state = freshState(currentUser.uid, currentUser.email);
+      await setDoc(calendarDocRef(currentUser.uid), state);
+    } else {
+      state = null; // başkasının takvimi, henüz yok
+    }
+    canEdit = !!state && (state.ownerUid === currentUser.uid || (state.invitedEmails || []).includes(currentUser.email));
+  } catch (e) {
+    state = null;
+    canEdit = false;
+  }
+  render();
+
+  if (firebaseReady) {
+    try {
+      stateUnsub = onSnapshot(calendarDocRef(targetUid), (snap) => {
+        if (!snap.exists()) return;
+        if (overlay.classList.contains('open')) return;
+        state = sanitizeState(snap.data(), targetUid);
+        canEdit = !!state && (state.ownerUid === currentUser.uid || (state.invitedEmails || []).includes(currentUser.email));
+        render();
+      });
+    } catch (e) { /* canlı senkronizasyon başlatılamadı, sorun değil */ }
+  }
+}
+
+async function saveState() {
+  if (!firebaseReady || !state) return;
+  await setDoc(calendarDocRef(state.ownerUid), state);
+}
+
+/* ---------- Gün düzenleme ---------- */
+function openDayEditModal(idx) {
+  const dateObj = addDays(state.startDate, idx);
+  const day = state.days[idx] || freshDay();
+  const guestLabel = state.guestLabel || 'Aile';
+
+  function mealSectionHtml(key, label) {
+    return '<p class="sub" style="font-weight:700; margin:14px 0 6px;">' + label + '</p>' +
+      '<ul class="list" id="list_' + key + '"></ul>' +
+      '<input type="text" id="input_' + key + '" placeholder="' + guestLabel + ' adı yaz, Enter\'a bas">';
+  }
+
+  const specialLabel = SPECIAL_NIGHTS[toISODate(dateObj)];
+  const meta = getDayMeta(idx);
+
+  modalContent.innerHTML =
+    (specialLabel ? '<div style="text-align:center;"><img src="lantern-special-medium.png" style="width:140px; margin-bottom:6px;" alt=""><p class="sub" style="font-weight:700; color:var(--gold); margin-bottom:4px;">' + escapeHtml(specialLabel) + '</p></div>' : '') +
+    (meta.isBayram ? '<div style="text-align:center;"><img src="bayram-medium.png" style="width:140px; margin-bottom:6px;" alt=""><p class="sub" style="font-weight:700; color:var(--gold); margin-bottom:4px;">Ramazan Bayramı Mübarek Olsun</p></div>' : '') +
+    '<h2>' + (meta.isBayram ? '🎉 ' : '') + meta.label + '</h2>' +
+    '<p class="sub">' + formatDate(dateObj) + '</p>' +
+    mealSectionHtml('iftar', 'İftar') +
+    (state.trackSahur ? mealSectionHtml('sahur', 'Sahur') : '') +
+    '<div class="modal-actions" style="margin-top:16px;"><button class="btn btn-nav" id="dayCloseBtn" style="width:100%;">Kaydet ve Kapat</button></div>';
+
+  const commitFns = [];
+
+  function setupMealSection(key) {
+    const list = day[key] || [];
+    function renderList() {
+      const ul = document.getElementById('list_' + key);
+      if (list.length === 0) {
+        ul.innerHTML = '<li style="justify-content:center; color:var(--ink-soft); font-style:italic;">Henüz kimse yok</li>';
+        return;
+      }
+      ul.innerHTML = list.map((f, i) => '<li><span>' + escapeHtml(f) + '</span><button data-i="' + i + '">✕</button></li>').join('');
+      ul.querySelectorAll('button').forEach((btn) => {
+        btn.addEventListener('click', () => { list.splice(parseInt(btn.getAttribute('data-i'), 10), 1); day[key] = list; renderList(); });
+      });
+    }
+    renderList();
+    const input = document.getElementById('input_' + key);
+    const commitPending = () => {
+      const val = input.value.trim();
+      if (!val) return;
+      list.push(val);
+      day[key] = list;
+      input.value = '';
+      renderList();
+    };
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      commitPending();
+    });
+    commitFns.push(commitPending);
+  }
+
+  setupMealSection('iftar');
+  if (state.trackSahur) setupMealSection('sahur');
+
+  document.getElementById('dayCloseBtn').addEventListener('click', async () => {
+    commitFns.forEach((fn) => fn()); // kutuda yazılı kalan, Enter'a basılmamış isimleri de ekle
+    state.days[idx] = { iftar: (day.iftar && day.iftar.length) ? day.iftar : null, sahur: (day.sahur && day.sahur.length) ? day.sahur : null };
+    await saveState();
+    closeModal();
+    render();
+  });
+
+  overlay.classList.add('open');
+  setTimeout(() => document.getElementById('input_iftar').focus(), 50);
+}
+
+/* ---------- Menü ---------- */
+function openMainMenu() {
+  if (!currentUser) {
+    modalContent.innerHTML =
+      '<h2>Menü</h2>' +
+      '<button class="btn btn-primary" id="menuLoginBtn" style="width:100%; margin-bottom:8px;">Giriş Yap / Kayıt Ol</button>' +
+      '<div class="modal-actions" style="margin-top:8px;"><button class="btn btn-nav" id="menuCloseBtn" style="width:100%;">Kapat</button></div>';
+    document.getElementById('menuLoginBtn').addEventListener('click', () => openLoginModal());
+    document.getElementById('menuCloseBtn').addEventListener('click', closeModal);
+    overlay.classList.add('open');
+    return;
+  }
+
+  const isOwnCalendar = viewingOwnerUid === currentUser.uid;
+  modalContent.innerHTML =
+    '<h2>Menü</h2>' +
+    '<p class="sub">' + escapeHtml(currentUser.email) + '</p>' +
+    (canEdit ? '<button class="btn btn-primary" id="menuSettings" style="width:100%; margin-bottom:8px;">📅 Tarihleri Ayarla</button>' : '') +
+    (state && state.startDate ? '<button class="btn btn-ghost" id="menuPrint" style="width:100%; margin-bottom:8px;">🖨️ Çıktı Al</button>' : '') +
+    (isOwnCalendar ? '<button class="btn btn-ghost" id="menuInvite" style="width:100%; margin-bottom:8px;">💌 Birini Davet Et</button>' : '') +
+    (!isOwnCalendar ? '<button class="btn btn-ghost" id="menuMyCalendar" style="width:100%; margin-bottom:8px;">🏠 Kendi Takvimime Dön</button>' : '') +
+    '<button class="btn btn-danger" id="menuLogout" style="width:100%; margin-bottom:8px;">Çıkış Yap</button>' +
+    '<div class="modal-actions" style="margin-top:8px;"><button class="btn btn-nav" id="menuCloseBtn" style="width:100%;">Kapat</button></div>';
+
+  const settingsBtn = document.getElementById('menuSettings');
+  if (settingsBtn) settingsBtn.addEventListener('click', openSettingsModal);
+  const printBtn = document.getElementById('menuPrint');
+  if (printBtn) printBtn.addEventListener('click', () => { closeModal(); printAgenda(); });
+  const inviteBtn = document.getElementById('menuInvite');
+  if (inviteBtn) inviteBtn.addEventListener('click', openInviteModal);
+  const myCalBtn = document.getElementById('menuMyCalendar');
+  if (myCalBtn) myCalBtn.addEventListener('click', () => { window.location.hash = ''; determineAndLoadCalendar(); closeModal(); });
+  document.getElementById('menuLogout').addEventListener('click', () => { signOut(auth); closeModal(); });
+  document.getElementById('menuCloseBtn').addEventListener('click', closeModal);
+  overlay.classList.add('open');
+}
+
+function openSettingsModal() {
+  if (!state.startDate) { state.startDate = DEFAULT_RAMADAN_START; state.numberOfDays = DEFAULT_RAMADAN_DAYS; }
+  const themeOptions = Object.keys(THEMES).map((key) =>
+    '<option value="' + key + '"' + (state.colorTheme === key ? ' selected' : '') + '>' + THEMES[key].name + '</option>'
+  ).join('');
+
+  modalContent.innerHTML =
+    '<h2>Ayarlar</h2>' +
+    '<p class="sub" style="font-weight:700; margin-bottom:4px;">Takvim Adı</p>' +
+    '<input type="text" id="calendarNameInput" placeholder="Ramazan Sofrası" value="' + escapeHtml(state.calendarName || '') + '">' +
+
+    '<p class="sub" style="font-weight:700; margin-bottom:4px;">Misafir Kelimesi</p>' +
+    '<input type="text" id="guestLabelInput" placeholder="Aile" value="' + escapeHtml(state.guestLabel || 'Aile') + '">' +
+
+    '<p class="sub" style="font-weight:700; margin-bottom:4px;">Renk Teması</p>' +
+    '<select id="colorThemeInput">' + themeOptions + '</select>' +
+
+    '<label style="display:flex; align-items:center; gap:8px; margin-bottom:12px; cursor:pointer;">' +
+      '<input type="checkbox" id="trackSahurInput" style="width:auto; margin:0;"' + (state.trackSahur ? ' checked' : '') + '>' +
+      '<span class="sub" style="margin:0;">Sahur\'u da ayrıca takip et</span>' +
+    '</label>' +
+
+    '<p class="sub" style="font-weight:700; margin-bottom:4px;">Ramazan Tarihleri</p>' +
+    '<div class="official-dates-box">' +
+      '<p class="official-dates-text">📅 ' + formatDate(addDays(state.startDate, 0)) + ' — ' + formatDate(addDays(state.startDate, state.numberOfDays - 1)) + ' <span class="official-dates-sub">(' + state.numberOfDays + ' gün, Diyanet resmi takvimine göre)</span></p>' +
+      (state.includeBayram ? '<p class="official-dates-text" style="margin-top:6px;">🎉 ' + formatDate(addDays(state.startDate, state.numberOfDays)) + ' — ' + formatDate(addDays(state.startDate, state.numberOfDays + state.bayramDays - 1)) + ' <span class="official-dates-sub">(Ramazan Bayramı, ' + state.bayramDays + ' gün)</span></p>' : '') +
+    '</div>' +
+    '<label style="display:flex; align-items:center; gap:8px; margin:8px 0 12px; cursor:pointer;">' +
+      '<input type="checkbox" id="includeBayramInput" style="width:auto; margin:0;"' + (state.includeBayram ? ' checked' : '') + '>' +
+      '<span class="sub" style="margin:0;">Ramazan Bayramı\'nı da takvime ekle</span>' +
+    '</label>' +
+    '<p class="pin-hint" id="toggleManualDateBtn" style="margin:4px 0 14px;">Farklı bir tarih kullanmam gerekiyor →</p>' +
+    '<div id="manualDateFields" style="display:none;">' +
+      '<input type="date" id="startDateInput" value="' + (state.startDate || '') + '">' +
+      '<p class="sub" style="margin:0 0 4px;">Ramazan kaç gün sürecek (genelde 29 veya 30)</p>' +
+      '<input type="number" id="numDaysInput" min="1" max="30" value="' + (state.numberOfDays || 30) + '">' +
+    '</div>' +
+
+    '<p class="sub" style="margin:4px 0 4px;">Çıktıda her gün için kaç ' + escapeHtml((state.guestLabel || 'Aile').toLowerCase()) + ' yeri olsun?</p>' +
+    '<input type="number" id="slotsPerDayInput" min="1" max="6" value="' + (state.slotsPerDay || 3) + '">' +
+
+    '<div class="modal-actions">' +
+      '<button class="btn btn-ghost" id="settingsCancelBtn">Vazgeç</button>' +
+      '<button class="btn btn-primary" id="settingsSaveBtn">Kaydet</button>' +
+    '</div>';
+  document.getElementById('settingsCancelBtn').addEventListener('click', openMainMenu);
+  document.getElementById('toggleManualDateBtn').addEventListener('click', () => {
+    document.getElementById('manualDateFields').style.display = 'block';
+    document.getElementById('toggleManualDateBtn').style.display = 'none';
+  });
+  document.getElementById('settingsSaveBtn').addEventListener('click', async () => {
+    const startDate = document.getElementById('startDateInput').value;
+    const numberOfDays = parseInt(document.getElementById('numDaysInput').value, 10) || 30;
+    const slotsPerDay = parseInt(document.getElementById('slotsPerDayInput').value, 10) || 3;
+    if (!startDate) return;
+    const oldDays = state.days || [];
+    state.calendarName = document.getElementById('calendarNameInput').value.trim();
+    state.guestLabel = document.getElementById('guestLabelInput').value.trim() || 'Aile';
+    state.colorTheme = document.getElementById('colorThemeInput').value;
+    state.trackSahur = document.getElementById('trackSahurInput').checked;
+    state.includeBayram = document.getElementById('includeBayramInput').checked;
+    state.bayramDays = state.bayramDays || DEFAULT_BAYRAM_DAYS;
+    state.startDate = startDate;
+    state.numberOfDays = numberOfDays;
+    state.slotsPerDay = slotsPerDay;
+    const newTotal = totalGridDays(state);
+    state.days = new Array(newTotal).fill(null).map((_, i) => oldDays[i] || freshDay());
+    await saveState();
+    closeModal();
+    render();
+  });
+  overlay.classList.add('open');
+}
+
+function openInviteModal() {
+  const invited = state.invitedEmails || [];
+  const shareLink = window.location.origin + window.location.pathname + '#' + currentUser.uid;
+  modalContent.innerHTML =
+    '<h2>Birini Davet Et</h2>' +
+    '<p class="sub">Davet ettiğin kişi, kendi hesabıyla giriş yaptığında bu takvimi görebilir ve düzenleyebilir.</p>' +
+    '<input type="email" id="inviteEmailInput" placeholder="E-posta adresi">' +
+    '<div class="modal-actions" style="margin-bottom:14px;"><button class="btn btn-primary" id="inviteAddBtn">Davet Et</button></div>' +
+    '<p class="sub" style="font-weight:600; margin-bottom:6px;">Davetliler</p>' +
+    '<ul class="list" id="inviteList"></ul>' +
+    '<p class="sub" style="font-weight:600; margin:14px 0 6px;">Paylaşım Linki</p>' +
+    '<input type="text" id="shareLinkInput" value="' + escapeHtml(shareLink) + '" readonly>' +
+    '<div class="modal-actions" style="margin-bottom:10px;"><button class="btn btn-ghost" id="copyLinkBtn" style="width:100%;">Linki Kopyala</button></div>' +
+    '<div class="modal-actions"><button class="btn btn-nav" id="inviteBackBtn" style="width:100%;">← Menü</button><button class="btn btn-nav" id="inviteCloseBtn" style="width:100%;">Kapat</button></div>';
+
+  function renderInviteList() {
+    const ul = document.getElementById('inviteList');
+    if (invited.length === 0) {
+      ul.innerHTML = '<li style="justify-content:center; color:var(--ink-soft); font-style:italic;">Henüz kimse davet edilmedi</li>';
+      return;
+    }
+    ul.innerHTML = invited.map((em, i) => '<li><span>' + escapeHtml(em) + '</span><button data-i="' + i + '">✕</button></li>').join('');
+    ul.querySelectorAll('button').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        invited.splice(parseInt(btn.getAttribute('data-i'), 10), 1);
+        state.invitedEmails = invited;
+        await saveState();
+        renderInviteList();
+      });
+    });
+  }
+  renderInviteList();
+
+  document.getElementById('inviteAddBtn').addEventListener('click', async () => {
+    const inp = document.getElementById('inviteEmailInput');
+    const val = inp.value.trim().toLowerCase();
+    if (!val || invited.includes(val)) { inp.value = ''; return; }
+    invited.push(val);
+    state.invitedEmails = invited;
+    await saveState();
+    inp.value = '';
+    renderInviteList();
+  });
+
+  document.getElementById('copyLinkBtn').addEventListener('click', () => {
+    const inp = document.getElementById('shareLinkInput');
+    inp.select();
+    try { navigator.clipboard.writeText(inp.value); } catch (e) { document.execCommand('copy'); }
+  });
+
+  document.getElementById('inviteBackBtn').addEventListener('click', openMainMenu);
+  document.getElementById('inviteCloseBtn').addEventListener('click', closeModal);
+  overlay.classList.add('open');
+}
+
+/* ---------- Çıktı (buzdolabına asılacak liste) ---------- */
+function printAgenda() {
+  if (!state || !state.startDate) return;
+  const slots = state.slotsPerDay || 3;
+  const guestLabel = state.guestLabel || 'Aile';
+  const cellsFor = (list) => new Array(slots).fill(null).map((_, i) => '<td>' + ((list && list[i]) ? escapeHtml(list[i]) : '&nbsp;') + '</td>').join('');
+
+  const rows = state.days.map((day, idx) => {
+    const dateObj = addDays(state.startDate, idx);
+    const specialLabel = SPECIAL_NIGHTS[toISODate(dateObj)];
+    const meta = getDayMeta(idx);
+    const rowClass = meta.isBayram ? ' class="pbayram"' : (specialLabel ? ' class="pspecial"' : '');
+    const numLabel = meta.isBayram ? '🎉' + (idx - state.numberOfDays + 1) : (idx + 1);
+    return '<tr' + rowClass + '><td class="pnum">' + numLabel + '</td><td class="pdate">' + formatDate(dateObj) + (specialLabel ? ' ⭐ ' + escapeHtml(specialLabel) : '') + (meta.isBayram ? ' (Bayram)' : '') + '</td>' +
+      cellsFor(day.iftar) + (state.trackSahur ? cellsFor(day.sahur) : '') + '</tr>';
+  }).join('');
+
+  const iftarHeaderCells = new Array(slots).fill(null).map((_, i) => '<th>İftar ' + guestLabel + ' ' + (i + 1) + '</th>').join('');
+  const sahurHeaderCells = state.trackSahur ? new Array(slots).fill(null).map((_, i) => '<th>Sahur ' + guestLabel + ' ' + (i + 1) + '</th>').join('') : '';
+
+  let printDiv = document.getElementById('printArea');
+  if (!printDiv) {
+    printDiv = document.createElement('div');
+    printDiv.id = 'printArea';
+    document.body.appendChild(printDiv);
+  }
+  const startObj = addDays(state.startDate, 0);
+  const endObj = addDays(state.startDate, totalGridDays(state) - 1);
+
+  printDiv.innerHTML =
+    '<div class="print-header">' +
+      '<p class="print-emoji-row">🌙 ✦ 🏮 ✦ 🌙</p>' +
+      '<p class="print-kicker">Ramazan</p>' +
+      '<h1>' + escapeHtml(state.calendarName || 'Ramazan Sofrası') + '</h1>' +
+      '<p class="print-range">' + formatDate(startObj) + ' — ' + formatDate(endObj) + '</p>' +
+    '</div>' +
+    '<table>' +
+      '<thead><tr><th>Gün</th><th>Tarih</th>' + iftarHeaderCells + sahurHeaderCells + '</tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+    '</table>' +
+    '<p class="print-footer">✦ Ramazan Mübarek Olsun ✦</p>';
+
+  window.print();
+}
+
+/* ---------- Giriş / Kayıt ---------- */
+function openLoginModal(note) {
+  modalContent.innerHTML =
+    '<div style="background:#E3EFE9; border:1px solid var(--emerald); color:var(--emerald-deep); padding:7px 12px; border-radius:8px; font-weight:600; font-size:12.5px; margin-bottom:14px; text-align:center;">🔑 Giriş Yapma Ekranı</div>' +
+    '<h2>Giriş Yap</h2>' +
+    '<p class="sub">' + escapeHtml(note || 'E-posta ve şifrenle giriş yap.') + '</p>' +
+    '<form id="loginForm">' +
+      '<input type="email" id="authEmailInput" name="email" placeholder="E-posta" autocomplete="username" required>' +
+      passwordFieldHtml('authPassInput', 'Şifre', 'current-password') +
+      '<div class="modal-actions">' +
+        '<button type="button" class="btn btn-ghost" id="authCancelBtn">Vazgeç</button>' +
+        '<button type="submit" class="btn btn-primary" id="authLoginBtn">Giriş Yap</button>' +
+      '</div>' +
+    '</form>' +
+    '<p class="pin-hint" id="authForgotLink" style="text-align:center; margin-top:10px;">Şifreni mi unuttun? →</p>' +
+    '<p class="pin-hint" id="authSignupLink" style="text-align:center; margin-top:6px;">Hesabın yok mu? Kayıt ol →</p>';
+  document.getElementById('authCancelBtn').addEventListener('click', closeModal);
+  document.getElementById('loginForm').addEventListener('submit', (e) => { e.preventDefault(); doLogin(); });
+  document.getElementById('authSignupLink').addEventListener('click', () => openSignupModal());
+  document.getElementById('authForgotLink').addEventListener('click', () => openForgotPasswordModal());
+  bindPasswordToggle('authPassInput');
+  overlay.classList.add('open');
+  setTimeout(() => document.getElementById('authEmailInput').focus(), 50);
+}
+
+function passwordFieldHtml(id, placeholder, autocomplete) {
+  return '<div class="pw-field">' +
+    '<input type="password" id="' + id + '" placeholder="' + escapeHtml(placeholder) + '" autocomplete="' + autocomplete + '" required>' +
+    '<button type="button" class="pw-toggle-btn" id="' + id + 'ToggleBtn" tabindex="-1" title="Şifreyi göster/gizle">👁️</button>' +
+  '</div>';
+}
+
+function bindPasswordToggle(id) {
+  const input = document.getElementById(id);
+  const btn = document.getElementById(id + 'ToggleBtn');
+  if (!input || !btn) return;
+  btn.addEventListener('click', () => {
+    if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+    else { input.type = 'password'; btn.textContent = '👁️'; }
+  });
+}
+
+async function doLogin() {
+  const email = document.getElementById('authEmailInput').value.trim();
+  const pass = document.getElementById('authPassInput').value;
+  if (!email || !pass) { return; }
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    closeModal();
+  } catch (e) {
+    const sub = document.querySelector('.modal .sub');
+    if (sub) sub.textContent = 'Giriş başarısız: ' + authErrorText(e);
+  }
+}
+
+function openSignupModal() {
+  modalContent.innerHTML =
+    '<div style="background:#FBF1DC; border:1px solid var(--gold-soft); color:var(--gold); padding:7px 12px; border-radius:8px; font-weight:600; font-size:12.5px; margin-bottom:14px; text-align:center;">✍️ Hesap Oluşturma Ekranı</div>' +
+    '<h2>Kayıt Ol</h2>' +
+    '<p class="sub">Yeni bir hesap oluştur.</p>' +
+    '<form id="signupForm">' +
+      '<input type="email" id="authEmailInput" name="email" placeholder="E-posta" autocomplete="username" required>' +
+      passwordFieldHtml('authPassInput', 'Şifre (en az 6 karakter)', 'new-password') +
+      '<div class="modal-actions">' +
+        '<button type="button" class="btn btn-ghost" id="authCancelBtn">Vazgeç</button>' +
+        '<button type="submit" class="btn btn-primary" id="authSignupBtn">Kayıt Ol</button>' +
+      '</div>' +
+    '</form>' +
+    '<p class="pin-hint" id="authLoginLink" style="text-align:center; margin-top:10px;">Zaten hesabın var mı? Giriş yap →</p>';
+  document.getElementById('authCancelBtn').addEventListener('click', closeModal);
+  document.getElementById('signupForm').addEventListener('submit', (e) => { e.preventDefault(); doSignup(); });
+  document.getElementById('authLoginLink').addEventListener('click', () => openLoginModal());
+  bindPasswordToggle('authPassInput');
+  overlay.classList.add('open');
+  setTimeout(() => document.getElementById('authEmailInput').focus(), 50);
+}
+
+async function doSignup() {
+  const email = document.getElementById('authEmailInput').value.trim();
+  const pass = document.getElementById('authPassInput').value;
+  if (!email || !pass) return;
+  if (pass.length < 6) { document.querySelector('.modal .sub').textContent = 'Şifre en az 6 karakter olmalı.'; return; }
+  try {
+    await createUserWithEmailAndPassword(auth, email, pass);
+    closeModal();
+  } catch (e) {
+    document.querySelector('.modal .sub').textContent = 'Kayıt başarısız: ' + authErrorText(e);
+  }
+}
+
+function openForgotPasswordModal() {
+  modalContent.innerHTML =
+    '<h2>Şifreni Sıfırla</h2>' +
+    '<p class="sub">E-postanı yaz, sana bir sıfırlama linki gönderelim.</p>' +
+    '<form id="forgotForm">' +
+      '<input type="email" id="forgotEmailInput" name="email" placeholder="E-posta" autocomplete="username" required>' +
+      '<div class="modal-actions">' +
+        '<button type="button" class="btn btn-ghost" id="forgotCancelBtn">← Geri</button>' +
+        '<button type="submit" class="btn btn-primary" id="forgotSendBtn">Gönder</button>' +
+      '</div>' +
+    '</form>';
+  document.getElementById('forgotCancelBtn').addEventListener('click', () => openLoginModal());
+  document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('forgotEmailInput').value.trim();
+    try {
+      const isWebOrigin = window.location.origin && window.location.origin.indexOf('http') === 0;
+      if (isWebOrigin) {
+        await sendPasswordResetEmail(auth, email, { url: window.location.origin + '/' });
+      } else {
+        await sendPasswordResetEmail(auth, email);
+      }
+      modalContent.innerHTML = '<h2>Gönderildi</h2><p class="sub">E-postana bir sıfırlama linki gönderdik. Gelen kutunu (ve spam klasörünü) kontrol et.</p><div class="modal-actions"><button class="btn btn-primary" id="okBtn" style="width:100%;">Tamam</button></div>';
+      document.getElementById('okBtn').addEventListener('click', closeModal);
+    } catch (e2) {
+      document.querySelector('.modal .sub').textContent = 'Gönderilemedi: ' + authErrorText(e2);
+    }
+  });
+  overlay.classList.add('open');
+  setTimeout(() => document.getElementById('forgotEmailInput').focus(), 50);
+}
+
+/* ---------- Başlangıç ---------- */
+menuBtn.addEventListener('click', openMainMenu);
+overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+window.addEventListener('hashchange', () => { if (currentUser) determineAndLoadCalendar(); });
+
+if (firebaseReady) {
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    determineAndLoadCalendar();
+  });
+} else {
+  headerDynamic.innerHTML = '<p class="range">Firebase ayarları eksik — script içindeki firebaseConfig kısmını doldurman gerekiyor.</p>';
+}
+</script>
+</body>
+</html>

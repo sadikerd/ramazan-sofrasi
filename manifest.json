@@ -1,0 +1,13 @@
+{
+  "name": "Ramazan Sofrası",
+  "short_name": "Ramazan Sofrası",
+  "description": "İftar ve sahur davetlerini kolayca organize et.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F5EFE1",
+  "theme_color": "#1E4D3B",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
